@@ -1,0 +1,59 @@
+<!-- Disclosure: I used ChatGPT to assist with the content of this assignment. -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary - Search Word</title>
+</head>
+
+<body>
+    <h1>Search for a Word in the Dictionary</h1>
+    <label for="searchWord">Word:</label>
+    <input type="text" id="searchWord" name="searchWord">
+    <button onclick="searchWord()">Search</button>
+    <div id="searchResult"></div>
+
+    <script>
+        function searchWord() {
+            const word = document.getElementById('searchWord').value.trim();
+            const searchResult = document.getElementById('searchResult');
+
+            // Clear the previous result
+            searchResult.innerHTML = '';
+
+            // Input validation
+            if (!word || /\d/.test(word)) {
+                searchResult.textContent = 'Invalid input. Please enter a valid word.';
+                return;
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `http://localhost:3000/api/definitions?word=${encodeURIComponent(word)}`, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200) {
+                        // Display the word and definition if it exists
+                        searchResult.innerHTML = `
+                            <p><strong>Word:</strong> ${response.message.split(':')[0]}</p>
+                            <p><strong>Definition:</strong> ${response.message.split(':')[1].trim()}</p>
+                        `;
+                    } else if (xhr.status === 404) {
+                        // Display the error message with the request count if the word is not found
+                        searchResult.innerHTML = `
+                            <p>Request# ${response.requestCount}, ${response.message}</p>
+                        `;
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+
+</html>

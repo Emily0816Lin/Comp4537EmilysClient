@@ -1,0 +1,54 @@
+<!-- Disclosure: I used ChatGPT to assist with the content of this assignment. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary - Add New Entry</title>
+</head>
+
+<body>
+    <h1>Add a New Word to the Dictionary</h1>
+    <label for="word">Word:</label>
+    <input type="text" id="word" name="word"><br><br>
+
+    <label for="definition">Definition:</label><br>
+    <textarea id="definition" name="definition" rows="4" cols="50"></textarea><br><br>
+
+    <button onclick="submitEntry()">Submit</button>
+    <p id="responseMessage"></p>
+
+    <script>
+        function submitEntry() {
+            const word = document.getElementById('word').value.trim();
+            const definition = document.getElementById('definition').value.trim();
+            const responseMessage = document.getElementById('responseMessage');
+
+            // Input validation
+            if (!word || !definition || /\d/.test(word)) {
+                responseMessage.textContent = 'Invalid input. Please enter a valid word and definition.';
+                return;
+            }
+
+            const data = JSON.stringify({ word, definition });
+            const xhr = new XMLHttpRequest();
+
+            // xhr.open('POST', 'https://yourDomainName2.wyz/api/definitions', true);
+            xhr.open('POST', 'http://localhost:3000/api/definitions', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    const response = JSON.parse(xhr.responseText);
+                    // Display the message with line breaks using innerHTML
+                    responseMessage.innerHTML = response.message.replace(/\n/g, '<br>');
+                }
+            };
+            xhr.send(data);
+        }
+    </script>
+</body>
+
+</html>
