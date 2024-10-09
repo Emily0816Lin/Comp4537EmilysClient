@@ -36,8 +36,8 @@
             const data = JSON.stringify({ word, definition });
             const xhr = new XMLHttpRequest();
 
-            // xhr.open('POST', 'https://yourDomainName2.wyz/api/definitions', true);
-            xhr.open('POST', 'http://localhost:3000/api/definitions', true);
+            xhr.open('POST', 'https://comp4537-emilys-lab4-server-2c2d132ad278.herokuapp.com/api/definitions', true);
+            // xhr.open('POST', 'http://localhost:3000/api/definitions', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
