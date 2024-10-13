@@ -24,23 +24,49 @@
 
     <script>
         // Insert predefined patient data on button click
-        // Insert predefined patient data on button click
-        document.getElementById("insertDataButton").addEventListener("click", function () {
-            // Predefined rows to insert
-            const patientData = [
-                ['Sara Brown', '1901-01-01'],
-                ['John Smith', '1941-01-01'],
-                ['Jack Ma', '1961-01-30'],
-                ['Elon Musk', '1999-01-01']
-            ];
+        // document.getElementById("insertDataButton").addEventListener("click", function () {
+        //     // Predefined rows to insert
+        //     const patientData = [
+        //         { name: 'Sara Brown', dateOfBirth: '1901-01-01' },
+        //         { name: 'John Smith', dateOfBirth: '1941-01-01' },
+        //         { name: 'Jack Ma', dateOfBirth: '1961-01-30' },
+        //         { name: 'Elon Musk', dateOfBirth: '1999-01-01' }
+        //     ];
 
-            // Send the data to the server via POST request with the key 'data'
-            fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/insert', {
+        //     // Send the data to the server via POST request with the key 'data'
+        //     // fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/insert', {
+        //     fetch('http://localhost:3000/lab5/api/v1/insert', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({ data: patientData })  // Send the patient data with key 'data'
+        //     })
+        //         .then(response => response.text())  // Handle the text response from the server
+        //         .then(data => {
+        //             document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
+
+        document.getElementById("insertDataButton").addEventListener("click", function () {
+            // SQL query string to insert predefined data
+            const query = `
+                INSERT INTO patients (name, dateOfBirth)
+                VALUES 
+                    ('Sara Brown2', '1901-01-01'),
+                    ('John Smith2', '1941-01-01'),
+                    ('Jack Ma2', '1961-01-30'),
+                    ('Elon Musk2', '1999-01-01');
+            `;
+
+            // Send the SQL query to the server via POST request
+            fetch('http://localhost:3000/lab5/api/v1/sql', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ data: patientData })  // Send the patient data with key 'data'
+                body: JSON.stringify({ query: query })  // Send the query in the body
             })
                 .then(response => response.text())  // Handle the text response from the server
                 .then(data => {
@@ -50,13 +76,16 @@
         });
 
 
+
+
         // Execute SQL query on button click
         document.getElementById("executeQueryButton").addEventListener("click", function () {
             const query = document.getElementById("sqlQuery").value.trim();
 
             // Check if the query is a SELECT (read) or an INSERT (write)
             const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
-            let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com//lab5/api/v1/sql';
+            // let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com//lab5/api/v1/sql';
+            let url = 'http://localhost:3000/lab5/api/v1/sql';
 
             if (method === 'GET') {
                 // Encode the query as part of the URL for GET requests
