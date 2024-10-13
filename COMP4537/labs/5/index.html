@@ -23,24 +23,25 @@
     <p id="queryResponse"></p>
 
     <script>
-        // Insert predefined patient data on button click
         // document.getElementById("insertDataButton").addEventListener("click", function () {
-        //     // Predefined rows to insert
-        //     const patientData = [
-        //         { name: 'Sara Brown', dateOfBirth: '1901-01-01' },
-        //         { name: 'John Smith', dateOfBirth: '1941-01-01' },
-        //         { name: 'Jack Ma', dateOfBirth: '1961-01-30' },
-        //         { name: 'Elon Musk', dateOfBirth: '1999-01-01' }
-        //     ];
+        //     // SQL query string to insert predefined data
+        //     const query = `
+        //         INSERT INTO patients (name, dateOfBirth)
+        //         VALUES 
+        //             ('Sara Brown', '1901-01-01'),
+        //             ('John Smith', '1941-01-01'),
+        //             ('Jack Ma', '1961-01-30'),
+        //             ('Elon Musk', '1999-01-01');
+        //     `;
 
-        //     // Send the data to the server via POST request with the key 'data'
-        //     // fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/insert', {
-        //     fetch('http://localhost:3000/lab5/api/v1/insert', {
+        //     // Send the SQL query to the server via POST request
+        //     fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql', {
+        //     // fetch('http://localhost:3000/lab5/api/v1/sql', {
         //         method: 'POST',
         //         headers: {
         //             'Content-Type': 'application/json'
         //         },
-        //         body: JSON.stringify({ data: patientData })  // Send the patient data with key 'data'
+        //         body: JSON.stringify({ query: query })  // Send the query in the body
         //     })
         //         .then(response => response.text())  // Handle the text response from the server
         //         .then(data => {
@@ -49,47 +50,54 @@
         //         .catch(error => console.error('Error:', error));
         // });
 
-        document.getElementById("insertDataButton").addEventListener("click", function () {
-            // SQL query string to insert predefined data
-            const query = `
-                INSERT INTO patients (name, dateOfBirth)
-                VALUES 
-                    ('Sara Brown2', '1901-01-01'),
-                    ('John Smith2', '1941-01-01'),
-                    ('Jack Ma2', '1961-01-30'),
-                    ('Elon Musk2', '1999-01-01');
-            `;
+        // // Execute SQL query on button click
+        // document.getElementById("executeQueryButton").addEventListener("click", function () {
+        //     const query = document.getElementById("sqlQuery").value.trim();
 
-            // Send the SQL query to the server via POST request
-            fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql', {
-            // fetch('http://localhost:3000/lab5/api/v1/sql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query: query })  // Send the query in the body
-            })
-                .then(response => response.text())  // Handle the text response from the server
-                .then(data => {
-                    document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
-                })
-                .catch(error => console.error('Error:', error));
-        });
+        //     // Check if the query is a SELECT (read) or an INSERT (write)
+        //     const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
+        //     let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql';
+        //     // let url = 'http://localhost:3000/lab5/api/v1/sql';
+
+        //     if (method === 'GET') {
+        //         // Encode the query as part of the URL for GET requests
+        //         url += `?query=${encodeURIComponent(query)}`;
+        //     }
+
+        //     fetch(url, {
+        //         method: method,
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         // Only include body if it's a POST request (for INSERT queries)
+        //         body: method === 'POST' ? JSON.stringify({ query: query }) : null
+        //     })
+        //         .then(response => response.json())  // Handle the JSON response from the server
+        //         .then(data => {
+        //             // Display the result in a readable format
+        //             document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // });
 
 
+                // Function to get query from the URL
+                function getQueryFromUrl() {
+            const url = window.location.href;
+            const queryPart = url.split('/labs/5/')[1];  // Get the part after '/labs/5/'
+            if (queryPart) {
+                return decodeURIComponent(queryPart.trim());  // Decode and trim the query
+            }
+            return null;
+        }
 
-
-        // Execute SQL query on button click
-        document.getElementById("executeQueryButton").addEventListener("click", function () {
-            const query = document.getElementById("sqlQuery").value.trim();
-
-            // Check if the query is a SELECT (read) or an INSERT (write)
+        // Function to execute the query
+        function executeQuery(query) {
             const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
             let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql';
-            // let url = 'http://localhost:3000/lab5/api/v1/sql';
 
             if (method === 'GET') {
-                // Encode the query as part of the URL for GET requests
+                // For GET, encode the query as part of the URL
                 url += `?query=${encodeURIComponent(query)}`;
             }
 
@@ -98,15 +106,51 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                // Only include body if it's a POST request (for INSERT queries)
-                body: method === 'POST' ? JSON.stringify({ query: query }) : null
+                body: method === 'POST' ? JSON.stringify({ query: query }) : null  // Send query in body if POST
             })
-                .then(response => response.json())  // Handle the JSON response from the server
+                .then(response => response.json())
                 .then(data => {
-                    // Display the result in a readable format
                     document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        // Check if there's a query in the URL and execute it
+        const queryFromUrl = getQueryFromUrl();
+        if (queryFromUrl) {
+            document.getElementById("sqlQuery").value = queryFromUrl;  // Populate textarea with the URL query
+            executeQuery(queryFromUrl);  // Automatically execute the query from the URL
+        }
+
+        // Insert predefined data
+        document.getElementById("insertDataButton").addEventListener("click", function () {
+            const query = `
+                INSERT INTO patients (name, dateOfBirth)
+                VALUES 
+                    ('Sara Brown', '1901-01-01'),
+                    ('John Smith', '1941-01-01'),
+                    ('Jack Ma', '1961-01-30'),
+                    ('Elon Musk', '1999-01-01');
+            `;
+
+            fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query: query })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // Execute SQL query on button click
+        document.getElementById("executeQueryButton").addEventListener("click", function () {
+            const query = document.getElementById("sqlQuery").value.trim();
+            executeQuery(query);
         });
     </script>
 </body>
