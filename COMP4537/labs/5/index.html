@@ -8,23 +8,36 @@
 <body>
     <h1>Patient Management System</h1>
 
-    <!-- Button to insert preset data -->
-    <button id="insertDataButton">Insert Data</button>
+    <!-- Button to insert predefined data -->
+    <button id="insertDataButton">Insert Predefined Data</button>
     <p id="insertResponse"></p>
 
     <!-- Textarea for SQL queries -->
     <textarea id="sqlQuery" rows="4" cols="50" placeholder="Write your SQL query here (SELECT or INSERT)..."></textarea>
     <br/>
-    <button id="executeQueryButton">Get Data</button>
+    <button id="executeQueryButton">Execute SQL Query</button>
     <p id="queryResponse"></p>
 
     <script>
-        // Insert preset data on button click
+        // Insert predefined patient data on button click
         document.getElementById("insertDataButton").addEventListener("click", function () {
+            // Predefined rows to insert
+            const patientData = [
+                { name: 'Sara Brown', dateOfBirth: '1901-01-01' },
+                { name: 'John Smith', dateOfBirth: '1941-01-01' },
+                { name: 'Jack Ma', dateOfBirth: '1961-01-30' },
+                { name: 'Elon Musk', dateOfBirth: '1999-01-01' }
+            ];
+            
+            // Send the data to the server via POST request
             fetch('http://localhost:3000/lab5/api/v1/insert', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ patients: patientData })  // Send the hardcoded patient data to the server
             })
-            .then(response => response.text())  // Handling the text response from the server
+            .then(response => response.text())  // Handle the text response from the server
             .then(data => {
                 document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
             })
@@ -52,7 +65,7 @@
                 // Only include body if it's a POST request (for INSERT queries)
                 body: method === 'POST' ? JSON.stringify({ query: query }) : null
             })
-            .then(response => response.json())  // Handling the JSON response from the server
+            .then(response => response.json())  // Handle the JSON response from the server
             .then(data => {
                 // Display the result in a readable format
                 document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
