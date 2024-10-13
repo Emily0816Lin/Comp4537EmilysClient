@@ -61,7 +61,7 @@
             `;
 
             // Send the SQL query to the server via POST request
-            fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com//lab5/api/v1/sql', {
+            fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql', {
             // fetch('http://localhost:3000/lab5/api/v1/sql', {
                 method: 'POST',
                 headers: {
@@ -85,7 +85,7 @@
 
             // Check if the query is a SELECT (read) or an INSERT (write)
             const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
-            let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com//lab5/api/v1/sql';
+            let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql';
             // let url = 'http://localhost:3000/lab5/api/v1/sql';
 
             if (method === 'GET') {
