@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management System</title>
+</head>
+<body>
+    <h1>Patient Management System</h1>
+
+    <!-- Button to insert preset data -->
+    <button id="insertDataButton">Insert Data</button>
+    <p id="insertResponse"></p>
+
+    <!-- Textarea for SQL queries -->
+    <textarea id="sqlQuery" rows="4" cols="50" placeholder="Write your SQL query here (SELECT or INSERT)..."></textarea>
+    <br/>
+    <button id="executeQueryButton">Get Data</button>
+    <p id="queryResponse"></p>
+
+    <script>
+        // Insert preset data on button click
+        document.getElementById("insertDataButton").addEventListener("click", function () {
+            fetch('http://localhost:3000/lab5/api/v1/insert', {
+                method: 'POST',
+            })
+            .then(response => response.text())  // Handling the text response from the server
+            .then(data => {
+                document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Execute SQL query on button click
+        document.getElementById("executeQueryButton").addEventListener("click", function () {
+            const query = document.getElementById("sqlQuery").value.trim();
+            
+            // Check if the query is a SELECT (read) or an INSERT (write)
+            const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
+            let url = 'http://localhost:3000/lab5/api/v1/sql';
+            
+            if (method === 'GET') {
+                // Encode the query as part of the URL for GET requests
+                url += `?query=${encodeURIComponent(query)}`;
+            }
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // Only include body if it's a POST request (for INSERT queries)
+                body: method === 'POST' ? JSON.stringify({ query: query }) : null
+            })
+            .then(response => response.json())  // Handling the JSON response from the server
+            .then(data => {
+                // Display the result in a readable format
+                document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
