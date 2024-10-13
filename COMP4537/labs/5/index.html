@@ -2,11 +2,13 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Management System</title>
 </head>
+
 <body>
     <h1>Patient Management System</h1>
 
@@ -16,11 +18,12 @@
 
     <!-- Textarea for SQL queries -->
     <textarea id="sqlQuery" rows="4" cols="50" placeholder="Write your SQL query here (SELECT or INSERT)..."></textarea>
-    <br/>
+    <br />
     <button id="executeQueryButton">Execute SQL Query</button>
     <p id="queryResponse"></p>
 
     <script>
+        // Insert predefined patient data on button click
         // Insert predefined patient data on button click
         document.getElementById("insertDataButton").addEventListener("click", function () {
             // Predefined rows to insert
@@ -30,30 +33,31 @@
                 { name: 'Jack Ma', dateOfBirth: '1961-01-30' },
                 { name: 'Elon Musk', dateOfBirth: '1999-01-01' }
             ];
-            
-            // Send the data to the server via POST request
+
+            // Send the data to the server via POST request with the key 'data'
             fetch('https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/insert', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ patients: patientData })  // Send the hardcoded patient data to the server
+                body: JSON.stringify({ data: patientData })  // Send the patient data with key 'data'
             })
-            .then(response => response.text())  // Handle the text response from the server
-            .then(data => {
-                document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.text())  // Handle the text response from the server
+                .then(data => {
+                    document.getElementById("insertResponse").innerText = `Server Response: ${data}`;
+                })
+                .catch(error => console.error('Error:', error));
         });
+
 
         // Execute SQL query on button click
         document.getElementById("executeQueryButton").addEventListener("click", function () {
             const query = document.getElementById("sqlQuery").value.trim();
-            
+
             // Check if the query is a SELECT (read) or an INSERT (write)
             const method = query.toLowerCase().startsWith("select") ? "GET" : "POST";
-            let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com/lab5/api/v1/sql';
-            
+            let url = 'https://comp4537-emilys-lab5-server-28dd9e6f4214.herokuapp.com//lab5/api/v1/sql';
+
             if (method === 'GET') {
                 // Encode the query as part of the URL for GET requests
                 url += `?query=${encodeURIComponent(query)}`;
@@ -67,13 +71,14 @@
                 // Only include body if it's a POST request (for INSERT queries)
                 body: method === 'POST' ? JSON.stringify({ query: query }) : null
             })
-            .then(response => response.json())  // Handle the JSON response from the server
-            .then(data => {
-                // Display the result in a readable format
-                document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())  // Handle the JSON response from the server
+                .then(data => {
+                    // Display the result in a readable format
+                    document.getElementById("queryResponse").innerText = `Server Response:\n${JSON.stringify(data, null, 2)}`;
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
 </body>
+
 </html>
